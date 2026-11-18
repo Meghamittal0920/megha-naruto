@@ -6,7 +6,7 @@ import { useGSAP } from '@gsap/react';
 import Particles from '../bits/Particles';
 import RotatingText from '../bits/RotatingText';
 import ShinyText from '../bits/ShinyText';
-import { Banner, Leaves } from '../bits/Stage';
+import { Leaves } from '../bits/Stage';
 import { drawCover, framePaths, loadFrames, nearestLoaded } from '../lib/frames';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -23,16 +23,12 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    let bannerDone = false;
     let framesP = 0;
     const report = () => {
-      const p = framesP * 0.9 + (bannerDone ? 0.1 : 0);
+      const p = framesP;
       setProgress(p);
       if (p >= 0.999) setLoaded(true);
     };
-    const banner = new Image();
-    banner.onload = banner.onerror = () => ((bannerDone = true), report());
-    banner.src = 'nj/banner.webp';
     images.current = loadFrames(FRAMES, p => ((framesP = p), report()));
 
     const draw = () => canvas.current && drawCover(canvas.current, nearestLoaded(images.current, Math.round(frame.current.i)));
@@ -41,7 +37,7 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
     return () => window.removeEventListener('resize', draw);
   }, []);
 
-  // Preloader: shoji doors slide apart, banner drops in and swings.
+  // Preloader: shoji doors slide apart.
   useGSAP(
     () => {
       if (!loaded) return;
@@ -51,14 +47,12 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
         .to('.shoji--l', { xPercent: -101, duration: 1.1, ease: 'expo.inOut' }, 0.35)
         .to('.shoji--r', { xPercent: 101, duration: 1.1, ease: 'expo.inOut' }, 0.35)
         .set('.preloader', { display: 'none' })
-        .from('.hero .banner', { yPercent: -120, rotate: -4, duration: 1.4, ease: 'back.out(1.4)' }, 0.9)
-        .to('.hero .banner', { rotate: 1.2, duration: 0.9, ease: 'sine.inOut', yoyo: true, repeat: 1 }, 2.1)
         .from('.hero__hint, .hero__chrome > *', { opacity: 0, y: 16, stagger: 0.08, duration: 0.8, ease: 'power3.out' }, 1.6);
     },
     { dependencies: [loaded], scope: root }
   );
 
-  // Scroll: roll the banner up → scrub the clip → title.
+  // Scroll: scrub the clip → title.
   useGSAP(
     () => {
       const el = root.current!;
@@ -70,11 +64,9 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
         scrollTrigger: { trigger: el, start: 'top top', end: '+=460%', scrub: 1.2, pin: true }
       });
       tl.to('.hero__hint', { opacity: 0, y: 20, duration: 0.06 }, 0)
-        .fromTo('.hero .banner', { '--roll': 0 }, { '--roll': 0.9, duration: 0.28, ease: 'power1.in' }, 0)
-        .to('.hero .banner', { yPercent: -140, duration: 0.1, ease: 'power2.in' }, 0.27)
         .to('.hero__chrome', { opacity: 0, duration: 0.1 }, 0.62)
-        .to(frame.current, { i: FRAMES.length - 1, duration: 0.72, onUpdate: draw }, 0.22)
-        .fromTo('.hero__stage', { scale: 1.18, filter: 'brightness(0.55)' }, { scale: 1, filter: 'brightness(1)', duration: 0.6 }, 0.3)
+        .to(frame.current, { i: FRAMES.length - 1, duration: 0.9, onUpdate: draw }, 0.02)
+        .fromTo('.hero__stage', { scale: 1.18, filter: 'brightness(0.55)' }, { scale: 1, filter: 'brightness(1)', duration: 0.6 }, 0.02)
         .from(split.chars, { yPercent: 120, rotate: 8, opacity: 0, stagger: 0.02, duration: 0.18, ease: 'power3.out' }, 0.7)
         .from('.hero .intro__sub', { opacity: 0, y: 30, duration: 0.12 }, 0.84)
         .to('.hero__veil', { opacity: 1, duration: 0.25 }, 0.68);
@@ -129,7 +121,6 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
       </div>
 
       <Leaves count={16} />
-      <Banner src="nj/banner.webp" alt="Banner reading Megha Mittal, codergirl.megha" />
 
       <div className="hero__chrome">
         <span className="tag hero__tl">Act I · The awakening</span>
