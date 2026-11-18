@@ -12,8 +12,8 @@ import { drawCover, framePaths, loadFrames, nearestLoaded } from '../lib/frames'
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
-const FRAMES = framePaths('seq/ramen', 45); // clip's last 3 frames cut to a different shot — dropped
-const FIRST = 8; // the clip opens on a poster; start just before its own curtain parts
+const FRAMES = framePaths('seq/rasengan', 70); // Megha looks up, forms the seals and charges a rasengan
+const FIRST = 0;
 
 export default function CurtainOpen({ onReady }: { onReady: () => void }) {
   const root = useRef<HTMLElement>(null);
@@ -92,7 +92,7 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
   return (
     <section ref={root} className="hero" id="top">
       <div className="hero__stage">
-        <canvas ref={canvas} className="intro__canvas" aria-label="Megha coding at her desk with a bowl of ramen" />
+        <canvas ref={canvas} className="intro__canvas" aria-label="Megha forming hand seals and charging a crackling rasengan" />
       </div>
       <div className="hero__veil" />
       <div className="intro__particles">
