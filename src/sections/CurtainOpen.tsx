@@ -6,8 +6,7 @@ import { useGSAP } from '@gsap/react';
 import Particles from '../bits/Particles';
 import RotatingText from '../bits/RotatingText';
 import ShinyText from '../bits/ShinyText';
-import { Banner, Drapes, Leaves } from '../bits/Stage';
-import { setDrapes } from '../lib/drape';
+import { Banner, Leaves } from '../bits/Stage';
 import { drawCover, framePaths, loadFrames, nearestLoaded } from '../lib/frames';
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
@@ -59,12 +58,10 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
     { dependencies: [loaded], scope: root }
   );
 
-  // Scroll: roll the banner up → draw the drapes → scrub the clip → title.
+  // Scroll: roll the banner up → scrub the clip → title.
   useGSAP(
     () => {
       const el = root.current!;
-      const drape = { p: 0 };
-      setDrapes(el, 0);
       const draw = () => canvas.current && drawCover(canvas.current, nearestLoaded(images.current, Math.round(frame.current.i)));
       const split = new SplitText('.hero .intro__name span', { type: 'chars', charsClass: 'intro__char' });
 
@@ -75,8 +72,6 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
       tl.to('.hero__hint', { opacity: 0, y: 20, duration: 0.06 }, 0)
         .fromTo('.hero .banner', { '--roll': 0 }, { '--roll': 0.9, duration: 0.28, ease: 'power1.in' }, 0)
         .to('.hero .banner', { yPercent: -140, duration: 0.1, ease: 'power2.in' }, 0.27)
-        .to(drape, { p: 1, duration: 0.36, ease: 'power2.inOut', onUpdate: () => setDrapes(el, drape.p) }, 0.3)
-        .to('.hero .valance', { yPercent: -100, duration: 0.14, ease: 'power2.in' }, 0.62)
         .to('.hero__chrome', { opacity: 0, duration: 0.1 }, 0.62)
         .to(frame.current, { i: FRAMES.length - 1, duration: 0.72, onUpdate: draw }, 0.22)
         .fromTo('.hero__stage', { scale: 1.18, filter: 'brightness(0.55)' }, { scale: 1, filter: 'brightness(1)', duration: 0.6 }, 0.3)
@@ -133,16 +128,15 @@ export default function CurtainOpen({ onReady }: { onReady: () => void }) {
         </span>
       </div>
 
-      <Drapes />
       <Leaves count={16} />
       <Banner src="nj/banner.webp" alt="Banner reading Megha Mittal, codergirl.megha" />
 
       <div className="hero__chrome">
-        <span className="tag hero__tl">Act I · The curtain</span>
+        <span className="tag hero__tl">Act I · The awakening</span>
         <span className="tag hero__tr">Noida, IN · 28.53°N</span>
       </div>
       <div className="hero__hint">
-        <ShinyText text="Scroll to raise the curtain" color="#e9d9c0" shineColor="#ffffff" speed={2.4} className="tag" />
+        <ShinyText text="Scroll to begin" color="#e9d9c0" shineColor="#ffffff" speed={2.4} className="tag" />
         <span className="intro__hint-line" />
       </div>
 
