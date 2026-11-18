@@ -841,3 +841,12 @@
 @media (max-width: 760px) {
   .finale .banner { top: 16vh; }
 }
+
+/* soft corner shade — hides the patched-out watermark area of the clip */
+.hero__stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 42% 38% at 100% 100%, rgba(10, 8, 9, 0.78), rgba(10, 8, 9, 0.35) 55%, transparent 80%);
+}
